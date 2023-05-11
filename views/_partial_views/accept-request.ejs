@@ -1,0 +1,9 @@
+<%- include("../layout.ejs"); %>
+
+<div class="container p-5">
+  <h3>Accept Friend Request</h3>
+  <p>You have a friend request from <%= requestingUserName %>.</p>
+  <form action="/friend-requests/<%= requestId %>/accept" method="POST">
+    <button>Accept Request</button>
+  </form>
+</div>

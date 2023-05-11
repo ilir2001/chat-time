@@ -1,0 +1,22 @@
+<%- include('layout.ejs'); %>
+<div class="container">
+    <div class="row justify-content-center">
+    </div>
+
+    <form action="/search" method="get">
+      <label for="query">Search users with fullname: </label><br>
+      <input type="text" name="query" placeholder="Fullname">
+      <button type="submit">Search</button><br><br>
+    </form>
+
+    <a class="btn btn-warning" href="/users/friend-requests">Requests</a>
+    <a class="btn btn-primary" href="/users/friends">Friends</a>
+    <br><br>
+
+  </div>
+<div>
+    <a href="/logout"> <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Logout</button> </a>
+</div>
+
+</body>
+</html>
