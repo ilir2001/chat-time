@@ -1,66 +1,81 @@
 const User = require('../models/user.model');
+const Post = require('../models/post.model');
+
 const ObjectId = require('mongodb').ObjectId;
-const indexView = (req, res) => {
-    res.render("index", {
-        user: req.user,
-    });
+const indexView = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    Post.find()
+      .populate('user', 'name')
+      .exec()
+      .then(posts => {
+        res.render('index', { posts, user });
+      })
+      .catch(error => {
+        res.status(500).json({ error: 'An error occurred while retrieving posts.' });
+      });
+  } catch (e) {
+    res.json(e)
+  }
 };
 const searchView = async (req, res) => {
-    try {
-      const users = await User.find({ name: { $regex: `^${req.query.query}$` } });
-  
-      const senderId = req.user._id;
-      
-      for (const user of users) {
-        const hasSent = user.friendRequests.some(friendRequest => {
-          return friendRequest.toString() === senderId.toString();
-        });
-        user.isSent = hasSent;
-      }
-  
-      res.render("_partial_views/search-results", { users, currentUser: req.user });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Something went wrong' });
+  try {
+    const users = await User.find({ name: { $regex: `^${req.query.query}$` } });
+
+    const senderId = req.user._id;
+
+    for (const user of users) {
+      const hasSent = user.friendRequests.some(friendRequest => {
+        return friendRequest.toString() === senderId.toString();
+      });
+      user.isSent = hasSent;
     }
+
+    res.render("_partial_views/search-results", { users, currentUser: req.user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 }
 const sendRequest = async (req, res) => {
-    const userId = req.params.id;
-    const senderId = req.user._id;
-    let isUnique = true;
-  
-    try {
-        const recipient = await User.findById(userId);
-        const sender = await User.findById(ObjectId(senderId).toString());
+  const userId = req.params.id;
+  const senderId = req.user._id;
+  let isUnique = true;
 
-        recipient.friendRequests.forEach(firendRequest => {
-            if(firendRequest.toString() === sender._id.toString()) {
-                isUnique = false;
-                return;
-            }
-        });
-        
-        if(isUnique) {
-            recipient.friendRequests.push(sender);
-            await recipient.save();
+  try {
+    const recipient = await User.findById(userId);
+    const sender = await User.findById(ObjectId(senderId).toString());
 
-            const data = {
-                message: 'Friend request sent successfully!',
-                isFriendRequestSent: true
-              };
-  
-            res.render('index', { data });
-        } else {
-            const data = {
-                message: 'You have already sent a friend request to this user.',
-                isFriendRequestSent: false
-            };
-                res.render('index', { data });
-        }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Something went wrong' });
+    recipient.friendRequests.forEach(firendRequest => {
+      if (firendRequest.toString() === sender._id.toString()) {
+        isUnique = false;
+        return;
+      }
+    });
+
+    if (isUnique) {
+      recipient.friendRequests.push(sender);
+      await recipient.save();
+
+      const data = {
+        message: 'Friend request sent successfully!',
+        isFriendRequestSent: true
+      };
+
+      res.render('index', { data });
+    } else {
+      const data = {
+        message: 'You have already sent a friend request to this user.',
+        isFriendRequestSent: false
+      };
+      res.render('index', { data });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 }
 
 const friendRequests = async (req, res) => {
@@ -71,7 +86,7 @@ const friendRequests = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
   }
-}  
+}
 
 const allFriendsView = async (req, res) => {
   try {
@@ -142,13 +157,13 @@ const rejectRequest = async (req, res) => {
     res.status(500).json({ error: 'Something went wrong' });
   }
 }
-  
+
 module.exports = {
-    indexView,
-    searchView,
-    sendRequest,
-    acceptRequest,
-    friendRequests,
-    allFriendsView,
-    rejectRequest,
+  indexView,
+  searchView,
+  sendRequest,
+  acceptRequest,
+  friendRequests,
+  allFriendsView,
+  rejectRequest,
 };

@@ -40,6 +40,8 @@ app.use(passport.session());
 //Routes
 app.use("/", require('./routes/auth.router'));
 app.use("/", require('./routes/chat.route'));
+app.use("/", require('./routes/post.router'));
+
 
 
 

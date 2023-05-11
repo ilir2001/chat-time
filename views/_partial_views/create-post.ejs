@@ -1,0 +1,15 @@
+<!-- createPost.ejs -->
+<%- include("../layout.ejs"); %>
+  <div class="container">
+    <h1>Create Post</h1>
+    <form action="/post" method="post">
+      <div class="form-group">
+        <label for="content">Content:</label>
+        <textarea class="form-control" id="content" name="content" rows="4" cols="50"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+  </div>
+
+</body>
+</html>
