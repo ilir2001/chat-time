@@ -12,24 +12,30 @@
       <input type="text" name="query" placeholder="Fullname">
       <button type="submit">Search</button><br><br>
     </form>
-
-    <a class="btn btn-warning" href="/users/friend-requests">Requests</a>
-    <a class="btn btn-primary" href="/users/friends">Friends</a>
-
-    <a class="btn btn-success" href="/post">Create Post</a>
+    <div class="d-flex justify-content-between">
+      <div>
+        <a class="btn btn-warning" href="/users/friend-requests">Requests</a>
+        <a class="btn btn-primary" href="/users/friends">Friends</a>
+        <a class="btn btn-success" href="/post">Create Post</a>
+      </div>
+      <div>
+        <a href="/logout"> <button type="submit" class="btn btn-primary login-button">Logout</button> </a>
+      </div>
+</div>
 
     <br><br>
 
     <h1>Posts</h1>
     <ul class="list-group">
       <% posts.forEach(function(post) { %>
-        <li class="list-group-item">
+        <li class="list-group-item my-1">
           <div class="d-flex">
             <img style="width: 5%;" src="https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg" class="card-img-top" alt="<%= post.user.name %>">
             <div><%= post.user.name %></div>
           </div>
           <div> <%= post.content %></div>
           <button class="btn like-button" data-postid="<%= post._id %>" data-liked="<%= post.likes.includes(user.id) %>">
+            <%- post.likes.length %>
             <% if (post.likes.includes(user.id)) { %>
               <i class="bi bi-hand-thumbs-down-fill text-danger"></i>
             <% } else { %>
@@ -40,7 +46,6 @@
       <% }); %>
     </ul>
   </div>
-  <a href="/logout"> <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Logout</button> </a>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
@@ -55,7 +60,7 @@
           url: '/post/' + postId + '/like',
           data: { liked: liked },
           success: function(data) {
-            button.html(data.liked ? '<i class="bi bi-hand-thumbs-down-fill text-danger"></i>' : '<i class="bi bi-hand-thumbs-up-fill text-success"></i>');
+            button.html(data.liked ? `${data.post.likes.length} <i class="bi bi-hand-thumbs-down-fill text-danger"></i>` : `${data.post.likes.length} <i class="bi bi-hand-thumbs-up-fill text-success"></i>`);
             button.data('liked', data.liked);
           },
           error: function(error) {

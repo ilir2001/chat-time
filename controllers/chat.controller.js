@@ -8,6 +8,7 @@ const indexView = async (req, res) => {
   try {
     const user = await User.findById(userId);
     Post.find()
+      .sort({ _id: -1})
       .populate('user', 'name')
       .exec()
       .then(posts => {

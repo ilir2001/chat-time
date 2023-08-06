@@ -19,7 +19,7 @@ const createPost = async (req, res) => {
   
     newPost.save()
       .then(savedPost => {
-        res.render('index', user);
+        res.redirect('/index');
       })
       .catch(error => {
         res.status(500).json({ error: 'An error occurred while creating the post.' });
@@ -49,7 +49,7 @@ const likePost = (req, res) => {
   
         post.save()
           .then(updatedPost => {
-            res.json({ liked: !liked }); // Return the updated like status
+            res.json({ liked: !liked, post }); // Return the updated like status
           })
           .catch(error => {
             res.status(500).json({ error: 'An error occurred while updating the post.' });
