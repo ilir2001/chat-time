@@ -56,6 +56,7 @@ const registerUser = (req, res) => {
                   return res.redirect("/index");
                 });
               })
+
               .catch((err) => console.log(err));
           })
         );
@@ -68,7 +69,7 @@ const registerUser = (req, res) => {
 const loginView = (req, res) => {
   res.render("login", {});
 };
-
+console.log("Login");
 //Logging in Function
 
 const loginUser = (req, res) => {
