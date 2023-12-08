@@ -5,7 +5,7 @@ LocalStrategy = require("passport-local").Strategy;
 
 const User = require("../models/user.model");
 
-const loginCheck = passport => {
+const loginCheck = (passport) => {
   passport.use(
     new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
       //Check customer
@@ -13,8 +13,10 @@ const loginCheck = passport => {
       User.findOne({ email: email })
         .then((user) => {
           if (!user) {
-            console.log("wrong email");
-            return done();
+            const signuplink = "Http://localhost:3000/auth/register";
+            return done(null, false, {
+              message: `Email or password not correct! Do you want to Sign up${signuplink}`,
+            });
           }
 
           //Match Password
