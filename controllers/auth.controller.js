@@ -47,7 +47,16 @@ const registerUser = (req, res) => {
             newUser.password = hash;
             newUser
               .save()
-              .then(res.redirect("dashboard/login"))
+
+              .then((user) => {
+                req.login(user, function (err) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  return res.redirect("/index");
+                });
+              })
+
               .catch((err) => console.log(err));
           })
         );
@@ -60,7 +69,7 @@ const registerUser = (req, res) => {
 const loginView = (req, res) => {
   res.render("login", {});
 };
-
+console.log("Login");
 //Logging in Function
 
 const loginUser = (req, res) => {
@@ -82,10 +91,10 @@ const loginUser = (req, res) => {
   }
 };
 const logoutUser = (req, res) => {
-    req.logout(); // Passport.js function to remove the user from the session
-    res.redirect("/login");
-  };
-  
+  req.logout(); // Passport.js function to remove the user from the session
+  res.redirect("/login");
+};
+
 module.exports = {
   registerView,
   loginView,
